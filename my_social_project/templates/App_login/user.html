@@ -1,0 +1,66 @@
+{% extends "navbar.html" %} {% block title_block %}{{user.user_profile.full_name}}(@{{user.username}}){% endblock %}{% block css_block %}
+
+<style>
+    .crop {
+        width: 200px;
+        height: 200px;
+        overflow: hidden;
+    }
+    
+    .crop img {
+        width: 400px;
+        height: 400px;
+        border: 1px solid #131111;
+        margin: -75px 0 0 -100px;
+    }
+</style> {% endblock %}{% block body_block %}
+<div class="row">
+    <div class="col-sm-4">
+        {% if user.user_profile.profile_picture %}
+        <img src="/media/{{user.user_profile.profile_picture}}" width="250px" height="250px" class="rounded-circle" alt=""> {% else %}
+        <img src="/media/profile_pictures/fahim_avater.jpeg" width="250px" height="250px" class="rounded-circle" alt=""> {% endif %}
+    </div>
+    <div class="col-sm-8">
+        <h3>{{user.username}} &nbsp;
+            <a class="btn btn-light" href="{% url 'App_login:Edit' %}">Edit Profile</a>
+        </h3><br>
+        <h2>{{user.post.count}} Posts &nbsp; &nbsp; {{user.following.count}} Followers &nbsp; &nbsp; {{user.followers.count}} Following</h2>
+        <h3>{{user.user_profile.full_name}}</h3>
+        <h6>{{user.user_profile.bio|linebreaks}}</h6>
+    </div>
+</div>
+<hr>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+    NewPost
+  </button>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Create A New Post</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}{{form}}
+                    <button type=" submit " class="btn btn-primary ">Post</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <!-- <button type="button" class="btn btn-primary">Understood</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="row">
+    {% for post in user.post.all %}
+    <div class="crop">
+        <img src="/media/{{post.image}}" title="{{post.caption}}">
+        <!-- <h5>{{post.caption}}</h5> -->
+    </div>{% endfor %}
+</div>{% endblock %}
